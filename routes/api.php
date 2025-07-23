@@ -24,7 +24,7 @@ Route::group(['prefix' => 'auth'], function () {
 Route::get('products', [ProductController::class, 'index']);
 Route::get('products/{product}', [ProductController::class, 'show']);
 
-// Rute yang dilindungi untuk Admin
+// Rute untuk Admin
 Route::group(['middleware' => ['auth:api', 'admin']], function () {
     Route::post('products', [ProductController::class, 'store']);
     Route::put('products/{product}', [ProductController::class, 'update']);
@@ -33,7 +33,7 @@ Route::group(['middleware' => ['auth:api', 'admin']], function () {
 
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::post('checkout', [OrderController::class, 'checkout']);
+    Route::post('checkout', [OrderController::class, 'checkout'])->middleware('customer');
 
     // Rute laporan hanya untuk admin
     Route::get('orders/report', [OrderController::class, 'salesReport'])->middleware('admin');
