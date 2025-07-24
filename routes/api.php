@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\DashboardController;
 
 // Auth
 // Rute untuk Autentikasi
@@ -35,8 +36,11 @@ Route::group(['middleware' => ['auth:api', 'admin']], function () {
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('checkout', [OrderController::class, 'checkout'])->middleware('customer');
 
-    // Rute laporan hanya untuk admin
-    Route::get('orders/report', [OrderController::class, 'salesReport'])->middleware('admin');
+    // Rute yang hanya bisa diakses admin
+    Route::group(['middleware' => 'admin'], function () {
+        Route::get('orders/report', [OrderController::class, 'salesReport']);
+        Route::get('dashboard/stats', [DashboardController::class, 'stats']);
+    });
 });
 
 
