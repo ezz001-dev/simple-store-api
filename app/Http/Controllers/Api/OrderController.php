@@ -90,7 +90,7 @@ class OrderController extends Controller
      */
     public function salesReport()
     {
-        $orders = Order::with(['user:id,name,email', 'details.product:id,name'])
+        $orders = Order::with(['user:id,name,email', 'details.product:id,name,image_path'])
             ->latest()
             ->paginate(15);
 
