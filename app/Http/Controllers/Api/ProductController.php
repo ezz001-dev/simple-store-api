@@ -36,14 +36,21 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'image_url' => 'nullable|url'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Validasi untuk file gambar
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $product = Product::create($request->all());
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')) {
+            // Simpan gambar ke 'storage/app/public/products'
+            $data['image_path'] = $request->file('image')->store('products', 'public');
+        }
+
+        $product = Product::create($data);
 
         return response()->json($product, 201);
     }
