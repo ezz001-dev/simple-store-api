@@ -17,7 +17,7 @@ class DashboardController extends Controller
      */
     public function stats()
     {
-        // 1. Data untuk Kartu Ringkasan
+        // 1. Data untuk Card Ringkasan
         $summary = [
             'total_revenue' => Order::sum('total_amount'),
             'total_stock' => Product::sum('stock'),

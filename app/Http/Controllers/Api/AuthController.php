@@ -95,7 +95,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             // Menggunakan guard 'api' untuk mendapatkan TTL
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
+            'expires_in' => auth('api')->factory()->getTTL() * 60, // 60 menit * 60 = 3600 detik ( JWT Expired )
             'user' => auth('api')->user()
         ]);
     }

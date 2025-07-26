@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -66,6 +67,7 @@ class ProductController extends Controller
     /**
      * Memperbarui data produk yang ada. (Hanya Admin)
      */
+
     public function update(Request $request, Product $product)
     {
         $validator = Validator::make($request->all(), [
@@ -73,14 +75,25 @@ class ProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'sometimes|required|numeric|min:0',
             'stock' => 'sometimes|required|integer|min:0',
-            'image_url' => 'nullable|url'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $product->update($request->all());
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
+            if ($product->image_path) {
+                Storage::disk('public')->delete($product->image_path);
+            }
+            // Selalu unggah gambar baru jika ada dalam request
+            $data['image_path'] = $request->file('image')->store('products', 'public');
+        }
+
+        $product->update($data);
 
         return response()->json($product);
     }
